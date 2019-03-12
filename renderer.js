@@ -17,19 +17,31 @@ loadConfig = () => {
   document.querySelector('#config').innerHTML = JSON.stringify(ipcRenderer.sendSync('get-config'))
 }
 
+hideSettings = () => {
+  document.querySelector('#login').style.display = 'none'
+}
+showSettings = () => {
+  document.querySelector('#login').style.display = 'block'
+}
+
 
 // Listeners for button clicks
-document.querySelector('.close').addEventListener('click', function () {
-  ipcRenderer.send('close-main-window')
-})
 document.querySelector('.selectDir').addEventListener('click', function () {
   ipcRenderer.send('select-dir')
   loadConfig()
 })
 document.querySelector('.saveConfig').addEventListener('click', function () {
   ipcRenderer.send('save-config')
+  hideSettings()
 })
 document.querySelector('.loadConfig').addEventListener('click', loadConfig)
+document.querySelector('.login').addEventListener('click', function () {
+  if (ipcRenderer.sendSync('login')) {
+    hideSettings()
+  }
+})
+document.querySelector('#settingsButton').addEventListener('click', showSettings)
+ipcRenderer.on('show-settings', showSettings);
 
 
 // Load config data to display for debugging

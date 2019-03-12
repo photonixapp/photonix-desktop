@@ -25,12 +25,36 @@ button {
 }
 iframe {
   width: 100%;
-  height: 600px;
-  margin: 10px 0 0 0;
+  height: 100%;
   border: 0;
+  position: absolute;
 }
 #login {
+  z-index: 20;
   padding: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #1b1b1b;
+}
+#settingsButton {
+  background: #00afd2;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 100%;
+  padding: 5px;
+  cursor: pointer;
+}
+#settingsButton img {
+  filter: invert(1);
+  width: 100%;
+  height: 100%;
 }
 #config {
   margin: 40px 0;

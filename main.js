@@ -2,8 +2,36 @@ const { app, BrowserWindow, ipcMain, dialog, Tray, Menu, nativeImage } = require
 const fs = require('fs')
 
 
-let mainWindow
+let mainWindow = null
+let tray = null
 let config = {}
+let menuTemplate = [
+  {
+    label: 'File',
+    submenu : [
+      {role: 'quit'},
+      {label: 'Settings', click() {showSettings()}}
+    ]
+  },
+  {
+    label : "View",
+    submenu : [
+      {role: 'togglefullscreen'},
+      {type: 'separator'},
+      {role: 'reload'},
+      {role: 'toggledevtools'},
+    ]
+  },
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'Learn More',
+        click () { require('electron').shell.openExternal('https://photonix.org') }
+      }
+    ]
+  }
+]
 
 
 app.on('ready', () => {
@@ -26,6 +54,9 @@ app.on('ready', () => {
   mainWindow.loadFile('index.html')
   // mainWindow.loadURL('http://example.com')
   // mainWindow.webContents.openDevTools()
+
+  let menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
 
   // IPC listeners
   ipcMain.on('close-main-window', (event, arg) => closeMainWindow())
@@ -52,9 +83,11 @@ app.on('ready', () => {
   
   ipcMain.on('save-config', (event, arg) => saveConfig())
 
+  ipcMain.on('login', (event, arg) => login(event))
+
   // Tray icon amd menu
   const icon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABzklEQVRYw+2XPU7DQBCFPwhQJlIIIEQogB4QSGTTUEMFEjEdHCIH4OcCQQhuAAVbUuYESQURRQ6ATEBCCR2QFDbNWjKWnax/kgaeNJK9Xvs9e97OrOGvYyzifTlgHlgEbMAEWkB7mGJXgHOgoUj94hE4U3MTwyxwDfT6EHujB1wBM3HJi8BrCGJvvAPbUckPge8Y5E58AaUob54EuVuECJPztwTJnWip1TMQ1zoPFELYUkpLSmkJIXRFXOosNS23G4ZhOzAMQ1dAF1h2E457BBwDk0OsJVPAUT8B+yOovntBAnLA6ggErANZ52TCdWEhcE0Wi+Tz+V9jQgjfYwemaVKr1YL6Tx7oeC/sBplHSmnZISGltPqYcccvBfYIu7Dt147XVKfTTkG5XAagUqlQr9d1U+BwPXkHp8NUtoh1wAYstwndKWgHfYGE8eA2oLcO3I9AwH2/QnSjSvGw0ANu3QMpz4QPYA7YGvSkdDpNJpOh2WxSrVYxTVO30d0NmjQTcxcUFC/K6FrYBD4T3pAUwuarpG5Mgvwgqmk2gOeYu6BCXOfm1E6mG4K4C1yEybkOloFTVUh8iVOpVAM4AZaG/WuWVe3baRCmcnmHf4TED6ypmmi/7iVJAAAAAElFTkSuQmCC')
-  const tray = new Tray(icon)
+  tray = new Tray(icon)
 
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Watch for new photos', type: 'checkbox', checked: true },
@@ -111,4 +144,12 @@ saveConfig = () => {
     }
     console.log('The file has been succesfully saved')
   })
+}
+
+login = (event) => {
+  event.returnValue = true
+}
+
+showSettings = () => {
+  mainWindow.webContents.send('show-settings')
 }
