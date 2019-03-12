@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Photonix Photo Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="login">
+      We are using Node.js <script>document.write(process.versions.node)</script>,
+      Chromium <script>document.write(process.versions.chrome)</script>,
+      and Electron <script>document.write(process.versions.electron)</script>.
+      
+      <div id="config"></div>
+      
+      <button class="selectDir">Select folder</button>
+      <button class="saveConfig">Save config</button>
+      <button class="loadConfig">Load config</button>
+      <button class="close">Close</button>
+    </div>
+
+    <iframe src="https://demo.photonix.org/"></iframe>
+
+    <script>
+      // You can also require other files to run in this process
+      require('./renderer.js')
+    </script>
+  </body>
+</html>

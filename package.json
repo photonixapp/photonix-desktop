@@ -1,0 +1,23 @@
+{
+    "name": "photonix-desktop",
+    "version": "0.1.0",
+    "description": "Desktop client for Photonix photo manager",
+    "main": "main.js",
+    "scripts": {
+      "start": "electron ."
+    },
+    "repository": "https://github.com/damianmoore/photonix-desktop",
+    "keywords": [
+      "photonix",
+      "desktop",
+      "photo",
+      "manager",
+      "electron"
+    ],
+    "author": "Damian Moore",
+    "license": "GPL",
+    "devDependencies": {
+      "electron": "^4.0.8"
+    }
+  }
+  
