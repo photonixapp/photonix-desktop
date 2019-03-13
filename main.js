@@ -5,12 +5,15 @@ const fs = require('fs')
 let mainWindow = null
 let tray = null
 let config = {}
+let authenticated = false
 let menuTemplate = [
   {
     label: 'File',
     submenu : [
+      {label: 'Settings', click() {showSettings()}},
       {role: 'quit'},
-      {label: 'Settings', click() {showSettings()}}
+      {type: 'separator'},
+      {label: 'Logout', click() {logout()}}
     ]
   },
   {
@@ -77,14 +80,6 @@ app.on('ready', () => {
     }
   })
 
-  ipcMain.on('get-config', (event, arg) => {
-    event.returnValue = config
-  })
-  
-  ipcMain.on('save-config', (event, arg) => saveConfig())
-
-  ipcMain.on('login', (event, arg) => login(event))
-
   // Tray icon amd menu
   const icon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABzklEQVRYw+2XPU7DQBCFPwhQJlIIIEQogB4QSGTTUEMFEjEdHCIH4OcCQQhuAAVbUuYESQURRQ6ATEBCCR2QFDbNWjKWnax/kgaeNJK9Xvs9e97OrOGvYyzifTlgHlgEbMAEWkB7mGJXgHOgoUj94hE4U3MTwyxwDfT6EHujB1wBM3HJi8BrCGJvvAPbUckPge8Y5E58AaUob54EuVuECJPztwTJnWip1TMQ1zoPFELYUkpLSmkJIXRFXOosNS23G4ZhOzAMQ1dAF1h2E457BBwDk0OsJVPAUT8B+yOovntBAnLA6ggErANZ52TCdWEhcE0Wi+Tz+V9jQgjfYwemaVKr1YL6Tx7oeC/sBplHSmnZISGltPqYcccvBfYIu7Dt147XVKfTTkG5XAagUqlQr9d1U+BwPXkHp8NUtoh1wAYstwndKWgHfYGE8eA2oLcO3I9AwH2/QnSjSvGw0ANu3QMpz4QPYA7YGvSkdDpNJpOh2WxSrVYxTVO30d0NmjQTcxcUFC/K6FrYBD4T3pAUwuarpG5Mgvwgqmk2gOeYu6BCXOfm1E6mG4K4C1yEybkOloFTVUh8iVOpVAM4AZaG/WuWVe3baRCmcnmHf4TED6ypmmi/7iVJAAAAAElFTkSuQmCC')
   tray = new Tray(icon)
@@ -133,6 +128,10 @@ loadConfig = () => {
   })
 }
 
+getConfig = () => {
+  return config
+}
+
 saveConfig = () => {
   let path = app.getPath('userData') + '/config.json'
   let content = JSON.stringify(config)
@@ -146,8 +145,20 @@ saveConfig = () => {
   })
 }
 
-login = (event) => {
-  event.returnValue = true
+login = (server, username, password) => {
+  console.log(server + ' ' + username + ' ' + password)
+  authenticated = true
+  return true
+}
+
+logout = () => {
+  authenticated = false
+  mainWindow.webContents.executeJavaScript('checkAuthenticated()')
+  return true
+}
+
+isAuthenticated = () => {
+  return authenticated
 }
 
 showSettings = () => {
