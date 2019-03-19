@@ -55,7 +55,6 @@ app.on('ready', () => {
   })
 
   mainWindow.loadFile('index.html')
-  // mainWindow.loadURL('http://example.com')
   // mainWindow.webContents.openDevTools()
 
   let menu = Menu.buildFromTemplate(menuTemplate);
@@ -78,6 +77,11 @@ app.on('ready', () => {
       config.sourceDirs = files
       saveConfig()
     }
+  })
+
+  ipcMain.on('get-settings', (event, arg) => {
+    console.log('get-settings')
+    event.returnValue = config
   })
 
   // Tray icon amd menu

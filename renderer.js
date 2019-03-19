@@ -13,54 +13,45 @@ window.onbeforeunload = (e) => {
   ipcRenderer.send('close-main-window')
 }
 
-let frame = document.querySelector('#contentIframe').contentWindow
-frame.onload = (e) => {
-  console.log('frame loaded')
-  sendSettingsToIframe()
-}
+let webview = document.querySelector('#contentFrame')
 
 showConfig = () => {
   let config = remote.getGlobal('getConfig')()
   document.querySelector('#config').innerHTML = JSON.stringify(config)
 }
 
-hideSettings = () => {
+hideLogin = () => {
   document.querySelector('#login').style.display = 'none'
 }
-showSettings = () => {
+
+showLogin = () => {
   document.querySelector('#login').style.display = 'block'
 }
-sendSettingsToIframe = () => {
-  let config = remote.getGlobal('getConfig')()
-  frame.postMessage({
-    type: 'config',
-    data: config
-  }, '*')
+
+showSettings = () => {
+  webview.executeJavaScript("window.showSettings()")
 }
+
 login = () => {
   if (remote.getGlobal('login')(
     document.querySelector('#server').value,
     document.querySelector('#username').value,
     document.querySelector('#password').value
   )) {
-    hideSettings()
+    hideLogin()
   }
 }
+
 logout = () => {
-  // frame.postMessage({
-  //   type: 'logout'
-  // }, '*')
-  if (remote.getGlobal('logout')()) {
-    console.log('loggedout')
-    showSettings()
-  }
+  showLogin()
 }
+
 checkAuthenticated = () => {
   if (remote.getGlobal('isAuthenticated')()) {
-    hideSettings()
+    hideLogin()
   }
   else {
-    showSettings()
+    showLogin()
   }
 }
 
@@ -76,8 +67,7 @@ document.querySelector('.saveConfig').addEventListener('click', function () {
 })
 document.querySelector('.loadConfig').addEventListener('click', showConfig)
 document.querySelector('.login').addEventListener('click', login)
-// document.querySelector('#settingsButton').addEventListener('click', showSettings)
-document.querySelector('#settingsButton').addEventListener('click', sendSettingsToIframe)
+document.querySelector('#settingsButton').addEventListener('click', showSettings)
 ipcRenderer.on('show-settings', showSettings)
 ipcRenderer.on('logout', logout)
 
