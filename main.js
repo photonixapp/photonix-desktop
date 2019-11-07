@@ -83,23 +83,7 @@ app.on('ready', () => {
     console.log('get-settings')
     event.returnValue = config
   })
-
-  // Tray icon amd menu
-  const icon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABzklEQVRYw+2XPU7DQBCFPwhQJlIIIEQogB4QSGTTUEMFEjEdHCIH4OcCQQhuAAVbUuYESQURRQ6ATEBCCR2QFDbNWjKWnax/kgaeNJK9Xvs9e97OrOGvYyzifTlgHlgEbMAEWkB7mGJXgHOgoUj94hE4U3MTwyxwDfT6EHujB1wBM3HJi8BrCGJvvAPbUckPge8Y5E58AaUob54EuVuECJPztwTJnWip1TMQ1zoPFELYUkpLSmkJIXRFXOosNS23G4ZhOzAMQ1dAF1h2E457BBwDk0OsJVPAUT8B+yOovntBAnLA6ggErANZ52TCdWEhcE0Wi+Tz+V9jQgjfYwemaVKr1YL6Tx7oeC/sBplHSmnZISGltPqYcccvBfYIu7Dt147XVKfTTkG5XAagUqlQr9d1U+BwPXkHp8NUtoh1wAYstwndKWgHfYGE8eA2oLcO3I9AwH2/QnSjSvGw0ANu3QMpz4QPYA7YGvSkdDpNJpOh2WxSrVYxTVO30d0NmjQTcxcUFC/K6FrYBD4T3pAUwuarpG5Mgvwgqmk2gOeYu6BCXOfm1E6mG4K4C1yEybkOloFTVUh8iVOpVAM4AZaG/WuWVe3baRCmcnmHf4TED6ypmmi/7iVJAAAAAElFTkSuQmCC')
-  tray = new Tray(icon)
-
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Watch for new photos', type: 'checkbox', checked: true },
-    { label: 'Run analysis on photos', type: 'checkbox', checked: true },
-    { type: 'separator' },
-    { label: 'Show main window', click() {showMainWindow()} },
-    { label: 'Close', click() {quit()}},
-  ])
-
-  tray.setToolTip('This is my application.')
-  tray.setContextMenu(contextMenu)
 })
-
 
 showMainWindow = () => {
   mainWindow.show()
@@ -129,6 +113,8 @@ loadConfig = () => {
     }
     console.log('The file content is: ' + data)
     config = JSON.parse(data)
+
+    setContextMenu()
   })
 }
 
@@ -149,6 +135,23 @@ saveConfig = () => {
   })
 }
 
+setContextMenu = () => {
+  // Tray icon amd menu
+  const icon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABzklEQVRYw+2XPU7DQBCFPwhQJlIIIEQogB4QSGTTUEMFEjEdHCIH4OcCQQhuAAVbUuYESQURRQ6ATEBCCR2QFDbNWjKWnax/kgaeNJK9Xvs9e97OrOGvYyzifTlgHlgEbMAEWkB7mGJXgHOgoUj94hE4U3MTwyxwDfT6EHujB1wBM3HJi8BrCGJvvAPbUckPge8Y5E58AaUob54EuVuECJPztwTJnWip1TMQ1zoPFELYUkpLSmkJIXRFXOosNS23G4ZhOzAMQ1dAF1h2E457BBwDk0OsJVPAUT8B+yOovntBAnLA6ggErANZ52TCdWEhcE0Wi+Tz+V9jQgjfYwemaVKr1YL6Tx7oeC/sBplHSmnZISGltPqYcccvBfYIu7Dt147XVKfTTkG5XAagUqlQr9d1U+BwPXkHp8NUtoh1wAYstwndKWgHfYGE8eA2oLcO3I9AwH2/QnSjSvGw0ANu3QMpz4QPYA7YGvSkdDpNJpOh2WxSrVYxTVO30d0NmjQTcxcUFC/K6FrYBD4T3pAUwuarpG5Mgvwgqmk2gOeYu6BCXOfm1E6mG4K4C1yEybkOloFTVUh8iVOpVAM4AZaG/WuWVe3baRCmcnmHf4TED6ypmmi/7iVJAAAAAElFTkSuQmCC')
+  tray = new Tray(icon)
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Watch for new photos', type: 'checkbox', checked: config.watchPhotos, click() {toggleWatchPhotos()} },
+    { label: 'Run analysis on photos', type: 'checkbox', checked: config.analyzePhotos, click() {toggleAnalyzePhotos()} },
+    { type: 'separator' },
+    { label: 'Show main window', click() {showMainWindow()} },
+    { label: 'Close', click() {quit()}},
+  ])
+
+  tray.setToolTip('This is my application.')
+  tray.setContextMenu(contextMenu)
+}
+
 login = (server, username, password) => {
   console.log(server + ' ' + username + ' ' + password)
   authenticated = true
@@ -167,4 +170,24 @@ isAuthenticated = () => {
 
 showSettings = () => {
   mainWindow.webContents.send('show-settings')
+}
+
+toggleWatchPhotos = () => {
+  if (!config.watchPhotos) {
+    config.watchPhotos = true
+  }
+  else {
+    config.watchPhotos = false
+  }
+  saveConfig()
+}
+
+toggleAnalyzePhotos = () => {
+  if (!config.analyzePhotos) {
+    config.analyzePhotos = true
+  }
+  else {
+    config.analyzePhotos = false
+  }
+  saveConfig()
 }
