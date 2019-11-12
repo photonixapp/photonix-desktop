@@ -1,9 +1,9 @@
 const { ipcRenderer } = require('electron')
 
-window.sendToElectron = function (channel) {
-  ipcRenderer.send(channel)
+window.sendToElectron = function (channel, arg) {
+  ipcRenderer.send(channel, arg)
 }
 
-window.sendSyncToElectron = function(channel) {
-  return ipcRenderer.sendSync(channel)
+window.sendSyncToElectron = function(channel, arg) {
+  return ipcRenderer.sendSync(channel, arg)
 }

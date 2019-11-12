@@ -61,7 +61,8 @@ input {
   left: 0;
   width: 100%;
   min-height: 100%;
-  background: #1b1b1b;
+  /* background: #1b1b1b; */
+  background: rgba(0,0,0,0.8);
 }
 #settingsButton {
   background: #00afd2;

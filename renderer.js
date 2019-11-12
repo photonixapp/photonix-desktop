@@ -33,13 +33,13 @@ showSettings = () => {
 }
 
 login = () => {
-  if (remote.getGlobal('login')(
-    document.querySelector('#server').value,
-    document.querySelector('#username').value,
-    document.querySelector('#password').value
-  )) {
+  // if (remote.getGlobal('login')(
+  //   document.querySelector('#server').value,
+  //   document.querySelector('#username').value,
+  //   document.querySelector('#password').value
+  // )) {
     hideLogin()
-  }
+  // }
 }
 
 logout = () => {
@@ -65,6 +65,7 @@ document.querySelector('.saveConfig').addEventListener('click', function () {
   ipcRenderer.send('save-config')
   hideSettings()
 })
+
 document.querySelector('.loadConfig').addEventListener('click', showConfig)
 document.querySelector('.login').addEventListener('click', login)
 document.querySelector('#settingsButton').addEventListener('click', showSettings)

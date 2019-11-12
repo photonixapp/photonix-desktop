@@ -30,7 +30,7 @@ let menuTemplate = [
     submenu: [
       {
         label: 'Learn More',
-        click () { require('electron').shell.openExternal('https://photonix.org') }
+        click() { require('electron').shell.openExternal('https://photonix.org') }
       }
     ]
   }
@@ -42,11 +42,12 @@ app.on('ready', () => {
   
   // Creation of window
   mainWindow = new BrowserWindow({
-    width: 994,
-    height: 738,
+    width: 1200,
+    height: 800,
     show: false,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webviewTag: true
     }
   })
 
@@ -79,9 +80,28 @@ app.on('ready', () => {
     }
   })
 
-  ipcMain.on('get-settings', (event, arg) => {
+  ipcMain.on('get-settings', (event) => {
     console.log('get-settings')
     event.returnValue = config
+  })
+
+  ipcMain.on('set-settings', (event, arg) => {
+    console.log('set-settings')
+    let updateContextMenu = false
+
+    for (let key in arg) {
+      console.log('  ' + key + ': ' + arg[key])
+      config[key] = arg[key]
+      if (['watchPhotos', 'analyzePhotos'].indexOf(key) > -1) {
+        updateContextMenu = true
+      }
+    }
+
+    saveConfig()
+    if (updateContextMenu) {
+      setContextMenu()
+    }
+    event.returnValue = true
   })
 })
 
@@ -137,8 +157,10 @@ saveConfig = () => {
 
 setContextMenu = () => {
   // Tray icon amd menu
-  const icon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABzklEQVRYw+2XPU7DQBCFPwhQJlIIIEQogB4QSGTTUEMFEjEdHCIH4OcCQQhuAAVbUuYESQURRQ6ATEBCCR2QFDbNWjKWnax/kgaeNJK9Xvs9e97OrOGvYyzifTlgHlgEbMAEWkB7mGJXgHOgoUj94hE4U3MTwyxwDfT6EHujB1wBM3HJi8BrCGJvvAPbUckPge8Y5E58AaUob54EuVuECJPztwTJnWip1TMQ1zoPFELYUkpLSmkJIXRFXOosNS23G4ZhOzAMQ1dAF1h2E457BBwDk0OsJVPAUT8B+yOovntBAnLA6ggErANZ52TCdWEhcE0Wi+Tz+V9jQgjfYwemaVKr1YL6Tx7oeC/sBplHSmnZISGltPqYcccvBfYIu7Dt147XVKfTTkG5XAagUqlQr9d1U+BwPXkHp8NUtoh1wAYstwndKWgHfYGE8eA2oLcO3I9AwH2/QnSjSvGw0ANu3QMpz4QPYA7YGvSkdDpNJpOh2WxSrVYxTVO30d0NmjQTcxcUFC/K6FrYBD4T3pAUwuarpG5Mgvwgqmk2gOeYu6BCXOfm1E6mG4K4C1yEybkOloFTVUh8iVOpVAM4AZaG/WuWVe3baRCmcnmHf4TED6ypmmi/7iVJAAAAAElFTkSuQmCC')
-  tray = new Tray(icon)
+  if (tray === null) {
+    const icon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABzklEQVRYw+2XPU7DQBCFPwhQJlIIIEQogB4QSGTTUEMFEjEdHCIH4OcCQQhuAAVbUuYESQURRQ6ATEBCCR2QFDbNWjKWnax/kgaeNJK9Xvs9e97OrOGvYyzifTlgHlgEbMAEWkB7mGJXgHOgoUj94hE4U3MTwyxwDfT6EHujB1wBM3HJi8BrCGJvvAPbUckPge8Y5E58AaUob54EuVuECJPztwTJnWip1TMQ1zoPFELYUkpLSmkJIXRFXOosNS23G4ZhOzAMQ1dAF1h2E457BBwDk0OsJVPAUT8B+yOovntBAnLA6ggErANZ52TCdWEhcE0Wi+Tz+V9jQgjfYwemaVKr1YL6Tx7oeC/sBplHSmnZISGltPqYcccvBfYIu7Dt147XVKfTTkG5XAagUqlQr9d1U+BwPXkHp8NUtoh1wAYstwndKWgHfYGE8eA2oLcO3I9AwH2/QnSjSvGw0ANu3QMpz4QPYA7YGvSkdDpNJpOh2WxSrVYxTVO30d0NmjQTcxcUFC/K6FrYBD4T3pAUwuarpG5Mgvwgqmk2gOeYu6BCXOfm1E6mG4K4C1yEybkOloFTVUh8iVOpVAM4AZaG/WuWVe3baRCmcnmHf4TED6ypmmi/7iVJAAAAAElFTkSuQmCC')
+    tray = new Tray(icon)
+  }
 
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Watch for new photos', type: 'checkbox', checked: config.watchPhotos, click() {toggleWatchPhotos()} },
