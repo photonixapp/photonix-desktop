@@ -69,15 +69,11 @@ app.on('ready', () => {
   })
 
   ipcMain.on('select-dir', (event, arg) => {
-    const files = dialog.showOpenDialog({
+    const files = dialog.showOpenDialogSync({
       title: 'Select folder',
       properties: ['openDirectory']
     })
-    console.log(files)
-    if (files) {
-      config.sourceDirs = files
-      saveConfig()
-    }
+    event.returnValue = files
   })
 
   ipcMain.on('get-settings', (event) => {
