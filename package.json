@@ -4,7 +4,8 @@
   "description": "Desktop client for Photonix photo manager",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager ."
   },
   "repository": "https://github.com/damianmoore/photonix-desktop",
   "keywords": [
@@ -18,5 +19,8 @@
   "license": "GPL",
   "devDependencies": {
     "electron": "^7.1.1"
+  },
+  "dependencies": {
+    "electron-packager": "^15.4.0"
   }
 }
