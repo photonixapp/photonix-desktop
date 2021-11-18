@@ -48,7 +48,8 @@ app.on('ready', () => {
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true
-    }
+    },
+    icon: 'static/images/logo.png'
   })
 
   mainWindow.once('ready-to-show', () => {

@@ -57,19 +57,19 @@ checkAuthenticated = () => {
 
 
 // Listeners for button clicks
-document.querySelector('.selectDir').addEventListener('click', function () {
-  ipcRenderer.send('select-dir')
-  showConfig()
-})
-document.querySelector('.saveConfig').addEventListener('click', function () {
-  ipcRenderer.send('save-config')
-  hideSettings()
-})
+// document.querySelector('.selectDir').addEventListener('click', function () {
+//   ipcRenderer.send('select-dir')
+//   showConfig()
+// })
+// document.querySelector('.saveConfig').addEventListener('click', function () {
+//   ipcRenderer.send('save-config')
+//   hideSettings()
+// })
 
-document.querySelector('.loadConfig').addEventListener('click', showConfig)
+// document.querySelector('.loadConfig').addEventListener('click', showConfig)
 document.querySelector('.login').addEventListener('click', login)
-document.querySelector('#settingsButton').addEventListener('click', showSettings)
-ipcRenderer.on('show-settings', showSettings)
+// document.querySelector('#settingsButton').addEventListener('click', showSettings)
+// ipcRenderer.on('show-settings', showSettings)
 ipcRenderer.on('logout', logout)
 
 

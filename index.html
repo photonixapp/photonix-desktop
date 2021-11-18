@@ -14,24 +14,24 @@
   <body>
     <div id="login">
       <div class="form">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" />
-        <label for="password">Password</label>
-        <input type="text" name="password" id="password" />
+        <!-- <label for="username">Username</label>
+        <input type="text" name="username" id="username" /> -->
+        <!-- <label for="password">Password</label>
+        <input type="text" name="password" id="password" /> -->
         <label for="server">Server</label>
-        <input type="text" name="server" id="server" value="https://demo.photonix.org/" />
-        <button class="login">Login</button>
+        <input type="text" name="server" id="server" value="http://localhost:8888/" />
+        <button class="login">Connect</button>
       </div>
 
-      <div id="config"></div>
+      <!-- <div id="config"></div> -->
 
-      <button class="selectDir">Select folder</button>
+      <!-- <button class="selectDir">Select folder</button>
       <button class="saveConfig">Save config</button>
-      <button class="loadConfig">Load config</button>
+      <button class="loadConfig">Load config</button> -->
     </div>
 
-    <div id="settingsButton"><img src="static/images/baseline-settings-20px.svg" /></div>
+    <!-- <div id="settingsButton"><img src="static/images/baseline-settings-20px.svg" /></div> -->
 
-    <webview id="contentFrame" src="https://demo.photonix.org/" preload="./preload.js" />
+    <webview id="contentFrame" src="http://localhost:8888/" preload="./preload.js" />
   </body>
 </html>
